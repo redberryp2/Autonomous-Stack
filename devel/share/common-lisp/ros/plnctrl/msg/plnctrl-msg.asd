@@ -1,0 +1,26 @@
+
+(cl:in-package :asdf)
+
+(defsystem "plnctrl-msg"
+  :depends-on (:roslisp-msg-protocol :roslisp-utils :std_msgs-msg
+)
+  :components ((:file "_package")
+    (:file "CtrlCmd" :depends-on ("_package_CtrlCmd"))
+    (:file "_package_CtrlCmd" :depends-on ("_package"))
+    (:file "GNSSInfo" :depends-on ("_package_GNSSInfo"))
+    (:file "_package_GNSSInfo" :depends-on ("_package"))
+    (:file "GNSSInfo2" :depends-on ("_package_GNSSInfo2"))
+    (:file "_package_GNSSInfo2" :depends-on ("_package"))
+    (:file "fusInfo" :depends-on ("_package_fusInfo"))
+    (:file "_package_fusInfo" :depends-on ("_package"))
+    (:file "fussInfo" :depends-on ("_package_fussInfo"))
+    (:file "_package_fussInfo" :depends-on ("_package"))
+    (:file "objInfo" :depends-on ("_package_objInfo"))
+    (:file "_package_objInfo" :depends-on ("_package"))
+    (:file "objsInfo" :depends-on ("_package_objsInfo"))
+    (:file "_package_objsInfo" :depends-on ("_package"))
+    (:file "signalInfo" :depends-on ("_package_signalInfo"))
+    (:file "_package_signalInfo" :depends-on ("_package"))
+    (:file "trafficInfo" :depends-on ("_package_trafficInfo"))
+    (:file "_package_trafficInfo" :depends-on ("_package"))
+  ))

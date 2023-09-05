@@ -1,0 +1,8 @@
+prefix=/home/autonav/catkin_ws/install
+
+Name: test_pkg
+Description: Description of test_pkg
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs nav_msgs geometry_msgs message_runtime

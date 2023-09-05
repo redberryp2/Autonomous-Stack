@@ -1,0 +1,8 @@
+prefix=/home/autonav/catkin_ws/install
+
+Name: morai_standard
+Description: Description of morai_standard
+Version: 0.0.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

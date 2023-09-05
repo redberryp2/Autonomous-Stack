@@ -73,3 +73,9 @@ target_link_libraries(gps2 ${catkin_LIBRARIES})
 
 add_executable(sinho src/get_sinho.cpp)
 target_link_libraries(sinho ${catkin_LIBRARIES})
+
+add_executable(track02 src/tracking02.cpp)
+target_link_libraries(track02 ${catkin_LIBRARIES})
+
+add_executable(map2 src/map_save.cpp)
+target_link_libraries(map2 ${catkin_LIBRARIES})

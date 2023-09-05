@@ -1,0 +1,8 @@
+prefix=/home/autonav/catkin_ws/devel
+
+Name: gpsimu_pkg
+Description: Description of gpsimu_pkg
+Version: 0.0.0
+Cflags: -I/home/autonav/catkin_ws/devel/include -I/usr/include/eigen3
+Libs: -L${prefix}/lib 
+Requires: std_msgs nav_msgs sensor_msgs message_runtime message_generation

@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/autonav/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/autonav/catkin_ws/src/Tracking_pkg/include/**",
+        "/home/autonav/catkin_ws/src/gpsimu_pkg/include/**",
+        "/home/autonav/catkin_ws/src/morai_tutorial/include/**",
+        "/home/autonav/catkin_ws/src/msg_tutorial/include/**",
+        "/home/autonav/catkin_ws/src/test_pkg/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

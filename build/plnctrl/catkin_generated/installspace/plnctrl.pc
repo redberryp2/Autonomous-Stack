@@ -1,0 +1,8 @@
+prefix=/home/autonav/catkin_ws/install
+
+Name: plnctrl
+Description: Description of plnctrl
+Version: 0.0.0
+Cflags: -I${prefix}/include -I/usr/include/eigen3
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs geometry_msgs message_runtime

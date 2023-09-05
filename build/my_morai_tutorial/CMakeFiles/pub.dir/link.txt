@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/pub.dir/src/pub.cpp.o  -o /home/autonav/catkin_ws/devel/lib/my_morai_tutorial/pub 

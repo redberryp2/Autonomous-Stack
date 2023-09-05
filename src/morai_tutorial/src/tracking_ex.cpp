@@ -49,6 +49,7 @@ void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &carstatus)
                 idx = i;
             }
         }
+    
 
     for (idx ; idx < 3870 ; idx++)
     {

@@ -19,8 +19,8 @@ void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &msg)
     position.emplace_back(msg -> acceleration.x);
     
 
-    cout<< position[0] <<" "<< position[1] <<" "<< position[2] <<" "<< position[3] << " "<< endl;
-
+    // cout<< position[0] <<" "<< position[1] <<" "<< position[2] <<" "<< position[3] << " "<< endl;
+    cout<< position[0] <<" "<< position[1]<<endl;
 }
 
 int main(int argc, char **argv)

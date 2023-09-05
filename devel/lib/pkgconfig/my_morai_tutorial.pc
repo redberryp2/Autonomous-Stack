@@ -1,0 +1,8 @@
+prefix=/home/autonav/catkin_ws/devel
+
+Name: my_morai_tutorial
+Description: Description of my_morai_tutorial
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

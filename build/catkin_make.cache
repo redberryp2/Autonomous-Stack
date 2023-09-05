@@ -1,0 +1,2 @@
+gpsimu_pkg:morai_msgs:morai_tutorial:msg_tutorial:test_pkg
+-DCATKIN_DEVEL_PREFIX=/home/autonav/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/autonav/catkin_ws/install -G Unix Makefiles
