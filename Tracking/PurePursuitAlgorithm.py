@@ -26,7 +26,7 @@ def pure_pursuit(path_array,my_point,path_length,alpha):
 
 
 if __name__=="__main__":
-    path = np.loadtxt('Control/path1.txt',delimiter='\t',unpack=False)
+    path = np.loadtxt('Map/path1.txt',delimiter='\t',unpack=False)
     path_array = np.array(path)
     path_length=len(path_array)
     my_point = np.array([5.81, 3.9675])
