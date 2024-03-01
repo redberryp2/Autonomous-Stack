@@ -40,7 +40,7 @@ include
 )
 
 add_executable(lqr
-  src/PurePursuit.cpp
+  src/LQR.cpp
   # src/lqr_speed_steer_control.cpp
   # src/cubic_spline_planner.cpp
 )

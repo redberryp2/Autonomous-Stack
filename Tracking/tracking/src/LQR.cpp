@@ -5,21 +5,20 @@
 #include <cmath>
 #include <fstream>
 #include <limits>
-#include <sys/time.h>
+#include <chrono>
 #include <eigen3/Eigen/Dense>
 #include "cubic_spline.h"
 #include "motion_model.h"
 #include "cpprobotics_types.h"
 #include <morai_msgs/CtrlCmd.h>
 #include <morai_msgs/EgoVehicleStatus.h>
-#define DT 0.02
 #define L 0.5
 #define KP 1.0
+#define DT 0.01
 #define MAX_STEER 20.0/180*M_PI
 
 using namespace std;
 using namespace cpprobotics;
-
 
 ros::Subscriber sub; 
 morai_msgs::CtrlCmd control;
@@ -40,7 +39,8 @@ Vec_f rk;
 Vec_f rs;
 int LD = 15;  //lookaheaddistance
 float delta;  // steering angle
-
+float e = 0;
+float e_th = 0;
 int ind = 0;
 //LQR
 State state(-0.0, -0.0, 0.0, 0.0);
@@ -51,7 +51,7 @@ Vec_f calc_speed_profile(Vec_f rx, Vec_f ry, Vec_f ryaw, float target_speed){
 
   float direction = 1.0;
   for(unsigned int i=0; i < ryaw.size()-1; i++){
-    float dyaw = std::abs(ryaw[i+1] - ryaw[i]);
+    float dyaw = abs(ryaw[i+1] - ryaw[i]);
     float switch_point = (M_PI/4.0< dyaw) && (dyaw<M_PI/2.0);
 
     if (switch_point) direction = direction * -1;
@@ -66,19 +66,22 @@ Vec_f calc_speed_profile(Vec_f rx, Vec_f ry, Vec_f ryaw, float target_speed){
 };
 
 float calc_nearest_index(State state, Vec_f cx, Vec_f cy, Vec_f cyaw){
-  float mind = std::numeric_limits<float>::max();
+  float mind = numeric_limits<float>::max();
   for(uint32_t i=ind; i<ind + 50; i++){
     float idx = cx[i] - state.x;
     float idy = cy[i] - state.y;
-    float d_e = sqrt(idx*idx + idy*idy);
+    float d_e = idx*idx + idy*idy;
 
     if (d_e<mind){
       mind = d_e;
       ind = i;
     }
   }
-  // if (angle < 0) mind = mind * -1;
-
+  float dxl = cx[ind] - state.x;
+  float dyl = cy[ind] - state.y;
+  float angle = YAW_P2P(cyaw[ind] - atan2(dyl, dxl));
+  if (angle < 0) 
+  mind = mind * -1;
   return mind;
 };
 
@@ -132,7 +135,7 @@ float lqr_steering_control(State state, Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck
   x(2) = th_e;
   x(3) = (th_e-pth_e)/DT;
 
-  float ff = std::atan2((L*k), (double)1.0);
+  float ff = atan2((L*k), (double)1.0);
   float fb = YAW_P2P((-K * x)(0));
   float delta = ff+fb;
 
@@ -143,8 +146,6 @@ float lqr_steering_control(State state, Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck
 
 
 void closed_loop_prediction(Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck){
-  float e = 0;
-  float e_th = 0;
   delta = lqr_steering_control(state, cx, cy, cyaw, ck, e, e_th);
   if( delta < -1 * MAX_STEER)
   {
@@ -156,18 +157,17 @@ void closed_loop_prediction(Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck){
   }
   cout << "니어 인덱스: "<<ind<<endl;
   cout << "니어 디스트: "<<e<<endl;
+  cout << "조향각: "<<delta * 180 / M_PI<<endl;
 };
 
 
 void Morai_pub()
 {
-    control.longlCmdType = 2;  //what is it?
-	control.accel = 1;
-	control.brake = 0;
+  control.longlCmdType = 2; 
 	control.steering = delta;
-	control.velocity = 30;
+	control.velocity = 100;
 	pub.publish(control);
-    
+
 }
 
 void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &msg)
@@ -179,10 +179,13 @@ void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &msg)
     state.x = My_enu[0];
     state.y = My_enu[1];
     state.yaw = My_enu[2] * M_PI / 180;
+    // state.yaw = YAW_P2P(My_enu[2] * M_PI / 180);
     state.v = 30;
     closed_loop_prediction(r_x, r_y, ryaw, rk);
     Morai_pub();
-
+    // cout<< state.x << endl;
+    // cout<< state.y << endl;
+    
 
 }
 
