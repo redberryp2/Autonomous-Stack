@@ -40,7 +40,8 @@ include
 )
 
 add_executable(lqr
-  src/LQR.cpp
+  src/LQR2.cpp
+  # src/LQR.cpp
   # src/lqr_speed_steer_control.cpp
   # src/cubic_spline_planner.cpp
 )

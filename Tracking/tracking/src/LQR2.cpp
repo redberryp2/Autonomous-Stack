@@ -12,20 +12,28 @@
 #include "cpprobotics_types.h"
 #include <morai_msgs/CtrlCmd.h>
 #include <morai_msgs/EgoVehicleStatus.h>
-#define L 0.5
-#define KP 1.0
-#define DT 0.01
+#include <chrono>
+
+#define L 2.7
+#define DT 0.02
 #define MAX_STEER 20.0/180*M_PI
+#define Cf 30000
+#define Cr 30000
+#define mass 1945
+#define Ig 1500
+#define L_A 1.5
+#define L_B 1.2
 
 using namespace std;
+using namespace chrono;
 using namespace cpprobotics;
 
 ros::Subscriber sub; 
 morai_msgs::CtrlCmd control;
 ros::Publisher pub;
 
-// ifstream Out("/home/autonav/catkin_ws/src/morai_tutorial/src/map/morai_highway2.txt");
 ifstream Out("/home/sangwoo/catkin_ws/src/morai_tutorial/src/map/morai_highway2.txt");
+// ifstream Out("/home/sangwoo/catkin_ws/src/morai_tutorial/src/map/morai_highway.txt");
 vector<vector<float>> Map_data(790,vector<float>(2,0));
 vector<float> Way_point(2,0);
 vector<double> My_enu(3,0);
@@ -38,7 +46,6 @@ Vec_f r_y;
 Vec_f ryaw;
 Vec_f rk;
 Vec_f rs;
-int LD = 15;  //lookaheaddistance
 float delta;  // steering angle
 float e = 0;
 float e_th = 0;
@@ -115,16 +122,22 @@ float lqr_steering_control(State state, Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck
   float th_e = YAW_P2P(state.yaw - cyaw[ind]);
 
   Eigen::Matrix4f A = Eigen::Matrix4f::Zero();
-  A(0, 0) = 1.0;
-  A(0 ,1) = DT;
-  A(1 ,2) = state.v;
-  A(2 ,2) = 1.0;
-  A(2 ,3) = DT;
-
+  A(0, 1) = 1.0;
+  A(1 ,1) = (-2*(Cf+Cr))/((double)mass * state.v);
+  A(1 ,2) = (2*(Cf+Cr))/(double)mass;
+  A(1 ,3) = (2*(L_A*Cf- L_B*Cr))/((double)mass * state.v);
+  A(3 ,1) = (-2*(L_A*Cf -L_B*Cr))/((double)Ig*state.v);
+  A(3 ,2) = (2*(L_A*Cf -L_B*Cr))/((double)Ig);
+  A(3 ,3) = (-2*(L_A*L_A*Cf +L_B*L_B*Cr))/((double)Ig*state.v);
+  
   Eigen::Vector4f B = Eigen::Vector4f::Zero();
-  B(3) = state.v/L;
-
+  B(1) = 2*Cf / (double)mass;
+  B(3) = 2*L_A*Cf / (double)Ig;
   Eigen::Matrix4f Q = Eigen::Matrix4f::Identity();
+  Q(0,0) = 1;
+  Q(1,1) = 0.1;
+  Q(2,2) = 1;
+  Q(3,3) = 0.1;
   float R = 1;
 
   // gain of lqr
@@ -173,6 +186,7 @@ void Morai_pub()
 
 void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &msg)
 {
+    // auto start = high_resolution_clock::now();
     My_enu.clear();
     My_enu.emplace_back(msg->position.x);
     My_enu.emplace_back(msg->position.y);
@@ -182,8 +196,11 @@ void callback(const morai_msgs::EgoVehicleStatus::ConstPtr &msg)
     state.yaw = My_enu[2] * M_PI / 180;
     // state.yaw = YAW_P2P(My_enu[2] * M_PI / 180);
     state.v = 30;
+    // auto end = high_resolution_clock::now();
+    // auto duration = duration_cast<milliseconds>(end - start);
     closed_loop_prediction(r_x, r_y, ryaw, rk);
     Morai_pub();
+    // cout<<"ms: "<<duration.count()<<endl;
     // cout<< state.x << endl;
     // cout<< state.y << endl;
     
