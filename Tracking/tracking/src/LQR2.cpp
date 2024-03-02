@@ -101,7 +101,8 @@ Eigen::Matrix4f solve_DARE(Eigen::Matrix4f A, Eigen::Vector4f B, Eigen::Matrix4f
   for(int i=0; i<maxiter; i++){
     Eigen::Matrix4f Xn = A.transpose()*X*A-A.transpose()*X*B/(R+B.transpose()*X*B) * B.transpose()*X*A+Q;
     Eigen::Matrix4f error = Xn - X;
-    if (error.cwiseAbs().maxCoeff()<eps){
+    if (error.cwiseAbs().maxCoeff()<eps)
+    {
       return Xn;
     }
     X = Xn;
