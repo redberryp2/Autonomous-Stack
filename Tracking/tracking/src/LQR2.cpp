@@ -17,10 +17,10 @@
 #define L 2.7
 #define DT 0.02
 #define MAX_STEER 20.0/180*M_PI
-#define Cf 30000
-#define Cr 30000
+#define Cf 120000
+#define Cr 120000
 #define mass 1945
-#define Ig 1500
+#define Ig 4000
 #define L_A 1.5
 #define L_B 1.2
 
@@ -32,8 +32,7 @@ ros::Subscriber sub;
 morai_msgs::CtrlCmd control;
 ros::Publisher pub;
 
-ifstream Out("/home/sangwoo/catkin_ws/src/morai_tutorial/src/map/morai_highway2.txt");
-// ifstream Out("/home/sangwoo/catkin_ws/src/morai_tutorial/src/map/morai_highway.txt");
+ifstream Out("/home/autonav/catkin_ws/src/morai_tutorial/src/map/morai_highway2.txt");
 vector<vector<float>> Map_data(790,vector<float>(2,0));
 vector<float> Way_point(2,0);
 vector<double> My_enu(3,0);
@@ -135,11 +134,11 @@ float lqr_steering_control(State state, Vec_f cx, Vec_f cy, Vec_f cyaw, Vec_f ck
   B(1) = 2*Cf / (double)mass;
   B(3) = 2*L_A*Cf / (double)Ig;
   Eigen::Matrix4f Q = Eigen::Matrix4f::Identity();
-  Q(0,0) = 1;
-  Q(1,1) = 0.1;
-  Q(2,2) = 1;
-  Q(3,3) = 0.1;
-  float R = 1;
+  Q(0,0) = 0.0000001633;
+  Q(1,1) = 0.0000001633;
+  Q(2,2) = 0.0000001633;
+  Q(3,3) = 0.0000001633;
+  float R = 100;
 
   // gain of lqr
   Eigen::RowVector4f K = dlqr(A, B, Q, R);

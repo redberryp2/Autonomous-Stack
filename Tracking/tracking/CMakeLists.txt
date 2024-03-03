@@ -40,10 +40,13 @@ include
 )
 
 add_executable(lqr
-  src/PID.cpp
+  # src/PID.cpp
   # src/LQR.cpp
-  # src/LQR2.cpp
-  # src/lqr_speed_steer_control.cpp
-  # src/cubic_spline_planner.cpp
+  src/LQR.cpp
 )
 target_link_libraries(lqr ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
+
+add_executable(pid
+  src/PID.cpp
+)
+target_link_libraries(pid ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
